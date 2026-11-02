@@ -1,0 +1,50 @@
+PPOCRLabel 定制版备份
+=====================
+备份时间: 2026-10-26 13:46 (本地时间)
+版本    : PPOCRLabel 2.1.3 (PFCCLab/PPOCRLabel) + 本项目定制改动
+来源    : /home/nvidia/.local/lib/python3.8/site-packages/PPOCRLabel
+GUI 环境: /usr/bin/python3 (Python 3.8.10) + 系统 PyQt5 5.14.1
+OCR 后端: python3.10 + PaddlePaddle 3.2.2 + PaddleOCR 3.7.0 (PP-OCRv5 英文模型)
+
+备份内容
+--------
+PPOCRLabel/                     完整源码包 (已排除 __pycache__ / *.pyc)
+PPOCRLabel.desktop              桌面快捷方式
+PPOCRLabel-launcher             /home/nvidia/.local/bin/PPOCRLabel 的等價启动脚本
+run_ppocrlabel_tool.sh          命令行启动脚本
+.autoOCRSettings.pkl            自动标注设置(自动识别区域、字符级分割开关、单线程等)
+BACKUP_INFO.txt                 本文件(含各关键文件 md5)
+
+相对官方 2.1.3 的定制功能
+------------------------
+1. PP-OCRv5 英文模型接入
+   - libs/ocrV5Bridge.py        Python3.8 侧常驻后端桥接(自动重启、崩溃重试、请求复放)
+   - libs/ocr_v5_backend.py     Python3.10 子进程 OCR 后端(PP-OCRv5 det + en rec)
+   - 检测默认单线程(规避 ARM 上多线程 Paddle 段错误)，可用 PPOCRLABEL_V5_CPU_THREADS 调整
+2. 自动标注可设置识别区域(按比例矩形)，可清除；设置持久化
+3. 字符级框分割可配置(勾选后自动把多字行拆成一字一框；倾斜文本保留四边形)
+4. 清除全部标注框 / 清除当前图像标记状态 / 清除所有图像标记状态
+   (清除标记会同时移除 fileState.txt 记录、Label.txt 与 Cache.cach 标签，便于重跑自动标注)
+5. 自动标注按钮运行结束后保持可用，无需重开目录
+6. 图像旋转：左/右 90 度、指定角度对话框、旋转滑条实时预览(绕图像中心、保持原尺寸)
+7. 批量浏览时保持缩放比例与滚动条位置
+8. 中英文界面字符串均已补齐
+
+恢复方法
+--------
+  rsync -a --delete PPOCRLabel/ /home/nvidia/.local/lib/python3.8/site-packages/PPOCRLabel/
+  cp .autoOCRSettings.pkl ~/
+  # 若 pip 元数据也被破坏，可重装: /usr/bin/python3 -m pip install --no-deps -e /path/to/PPOCRLabel
+
+关键文件 md5
+-----------
+c1af76205547c131dcec66764aeacaea  PPOCRLabel/PPOCRLabel.py
+76558c1aaa46009bd921fcb8fb30bae9  PPOCRLabel/libs/utils.py
+9d651fbd06186a956381ff0a30f2fa8c  PPOCRLabel/libs/ocrV5Bridge.py
+89ff1c7c42e46d02af1cd9d57304cf33  PPOCRLabel/libs/ocr_v5_backend.py
+1aee505382680c0735da378166b833ab  PPOCRLabel/libs/autoDialog.py
+747d7f6c6708be05402056702b77031f  PPOCRLabel/libs/canvas.py
+c8c92c86b488db74dccdc7d118988677  PPOCRLabel/libs/constants.py
+01861c6a59fdd3cd2ae9dc51807cff4b  PPOCRLabel/resources/strings/strings-zh-CN.properties
+2c5cb5bcdf69d2ca829e18c03e84d52b  PPOCRLabel/resources/strings/strings-en.properties
+d0c1826a53d7cec8fdad1bc4b7c1315e  PPOCRLabel/README.md

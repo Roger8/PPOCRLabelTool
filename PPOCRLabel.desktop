@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=PPOCRLabel
+Comment=OCR annotation tool (CPU)
+Exec=/home/nvidia/.local/bin/PPOCRLabel --lang ch --gpu false
+Path=/home/nvidia
+Terminal=false
+StartupNotify=true
+Categories=Graphics;
